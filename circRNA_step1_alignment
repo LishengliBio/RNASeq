@@ -1,0 +1,16 @@
+#!/bin/bash
+sample=$1
+dir_wk='/extraspace/sli/collaboration/XiangYu_circRNA/TGF_treat'
+fqs=(`ls ${dir_wk}/fastq/${sample}/*.fastq.gz`)
+ht2='/extraspace/sli/softwares/bin/hisat2'
+ht2_indx='/extraspace/sli/ref/fa/hisat2_index_hg19/gencode_v19_hg19'
+outdir=${dir_wk}'/alignmet_ht2/'${sample}
+mkdir -p ${outdir}
+out_sam=${outdir}/${sample}'_alignment.sam'
+${ht2} -x ${ht2_indx} -1 ${fqs[0]} -2 ${fqs[1]} -S ${out_sam}
+sambamba='/extraspace/sli/softwares/bin/sambamba'
+bamfile=${outdir}/${sample}'_alignment.bam'
+${sambamba} view ${out_sam} -S -f bam -o ${bamfile}
+samtools='/extraspace/sli/softwares/bin/samtools'
+unmap=${outdir}/${sample}'_unmapped.bam'
+${samtools} view -b -hf 4 ${bamfile} > ${unmap}
