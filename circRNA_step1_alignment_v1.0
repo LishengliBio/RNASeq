@@ -1,4 +1,6 @@
 #!/bin/bash
+### Usage: bash circRNA_step1_alignment_v1.0 [sample_name]
+#Get the sample name from command line
 sample=$1
 dir_wk='/extraspace/sli/collaboration/XiangYu_circRNA/TGF_treat'
 fqs=(`ls ${dir_wk}/fastq/${sample}/*.fastq.gz`)
