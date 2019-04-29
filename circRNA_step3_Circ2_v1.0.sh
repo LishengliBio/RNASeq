@@ -14,5 +14,5 @@ ${circ2} parse -t BWA -b ${dir_circ}/${sample}/${sample}'_circ2_result.txt' ${un
 ann_ref='/extraspace/sli/ref/Circ2_hg19_ref_ann.txt'
 ${circ2} annotate -r ${ann_ref} -g ${fa} -b ${dir_circ}/${sample}/${sample}'_circ2_result.txt' -o ${dir_circ}/${sample}/${sample}'_circ2_result_ann.circ2'
 
-## Note: you can download the annotation file using circRNA_fetch_ 
-#
+## Note: you can download the annotation file using circRNA_circ_fetch_ann.py
+# python fetch_ucsc.py hg19 ref /extraspace/sli/ref/Circ2_hg19_ref_ann.txt
