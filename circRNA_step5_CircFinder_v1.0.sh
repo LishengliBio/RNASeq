@@ -14,4 +14,5 @@ ${star} --genomeDir ${gdir} --readFilesIn ${unmap_fq} --runThreadN 15 --chimSegm
 pstalign='/extraspace/sli/softwares/circRNA_finder/postProcessStarAlignment.pl'
 star_align=${dir_circfinder}/${sample}
 circ_finder_out=${dir_circfinder}/${sample}
+cd ${star_align}
 perl ${pstalign} ${star_align} ${circ_finder_out}
