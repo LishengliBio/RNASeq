@@ -14,7 +14,8 @@ for s in samples:
                 l = l.strip()
                 tmp = l.split('\t')
                 if re.search(';',tmp[1]):
-                        Read_mean = int(np.mean([int(n) for n in tmp[2:]]))
+                        tmp1 = tmp[1].split(';')
+                        Read_mean = int(np.sum([int(n) for n in tmp[2:]])/len(tmp1))
                         fh_out.write(tmp[0]+'\t'+str(Read_mean)+'\n')
         fh_s.close()
         fh_out.close()
