@@ -1,35 +1,28 @@
 #!/bin/bash
-### Usage: bash circRNA_step1_alignment_v1.0 [sample_name]
-#Get the sample name from command line
 sample=$1
-# Set the working directories
-dir_wk='/extraspace/sli/collaboration/XiangYu_circRNA/TGF_treat'
-dir_alignment=${dir_wk}'/alignmet_ht2'
-mkdir -p ${dir_alignment}/${sample}
-dir_tmp=${dir_alignment}/${sample}
-# Prepare softwares or tools
+dir_wk='/extraspace/sli/circRNA01'
+dir_fq=${dir_wk}'/Trim_results'
+fq1=${dir_fq}/${sample}/${sample}'_filtered_R1.fastq.gz'
+fq2=${dir_fq}/${sample}/${sample}'_filtered_R2.fastq.gz'
 ht2='/extraspace/sli/softwares/bin/hisat2'
+ht2_indx='/extraspace/sli/ref/fa/hisat2_index/gencode_v28'
+outdir=${dir_wk}'/alignment_ht2/'${sample}
+mkdir -p ${outdir}
+out_sam=${outdir}/${sample}'_alignment.sam'
+${ht2} -x ${ht2_indx} -1 ${fq1} -2 ${fq2} -S ${out_sam}
 sambamba='/extraspace/sli/softwares/bin/sambamba'
+bamfile=${outdir}/${sample}'_alignment.bam'
+${sambamba} view ${out_sam} -S -f bam -o ${bamfile}
 samtools='/extraspace/sli/softwares/bin/samtools'
-bam2fq='/extraspace/sli/softwares/bin/bamToFastq'
-# Prepare hisat2 index file
-ht2_indx='/extraspace/sli/ref/fa/hisat2_index_hg19/gencode_v19_hg19'
-# Prepare output files
-out_sam=${dir_alingment}/${sample}/${sample}'_alignment.sam'
-out_bam=${dir_alignment}/${sample}/${sample}'_alignment.bam'
-unmap=${dir_alignment}/${sample}/${sample}'_unmapped.bam'
-unmap_fq=${dir_alignment}/${sample}/${sample}'_unmapped.fq'
-out_sortbam=${dir_alignment}/${sample}/${sample}'_alignment_sorted.bam'
-# Get fastq files
-fqs=(`ls ${dir_wk}/fastq/${sample}/*.fastq.gz`)
-# Run alignment using hisat2
-${ht2} -x ${ht2_indx} -1 ${fqs[0]} -2 ${fqs[1]} -S ${out_sam}
-# Convert Sam file to Bam file
-${sambamba} view ${out_sam} -S -f bam -o ${out_bam}
-# Get the unmapped alignment in bam file
+unmap=${outdir}/${sample}'_unmapped.bam'
 ${samtools} view -b -hf 4 ${bamfile} > ${unmap}
-# Get the unmapped sequence
+bam2fq='/extraspace/sli/softwares/bin/bamToFastq'
+unmap_fq=${outdir}/${sample}'_unmapped.fastq'
 ${bam2fq} -i ${unmap} -fq ${unmap_fq}
-# sort the bam file
-${sambamba} sort -o ${out_sortbam} --tmpdir ${dir_tmp} -t 8 ${out_bam}
-# remove the sam ban unsorted bam files
+file_stat=${dir_wk}'/alignment_ht2/'${sample}'/'${sample}'_alignment.stat'
+${samtools} flagstat ${bamfile} > ${file_stat}
+sortbam=${dir_wk}'/alignment_ht2/'${sample}'/'${sample}'_alignment_sorted.bam'
+tmpdir=${dir_wk}'/alignment_ht2/'${sample}
+${sambamba} sort -o ${sortbam} --tmpdir ${tmpdir} -t 8 ${bamfile}
+rm -f ${out_sam}
+rm -f ${bamfile}
