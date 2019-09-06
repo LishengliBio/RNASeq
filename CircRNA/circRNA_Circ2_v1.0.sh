@@ -12,7 +12,7 @@ ann_ref='/extraspace/sli/ref/Circ2_hg19_ref_ann.txt'
 
 # Prepare softwares and tools
 bwa='/extraspace/sli/softwares/bin/bwa'
-circ2='/extraspace/sli/softwares/anaconda2/bin/CIRCexplorer2'
+circ2='/extraspace/sli/softwares/Anaconda3/bin/CIRCexplorer2'
 
 # Run Circ2 to call circRNAs
 ${bwa} mem -t 8 -T 19 ${fa} ${unmap_fq} > ${unmap_bwa_sam} 2> ${outdir}/${sample}'_bwa.log'
